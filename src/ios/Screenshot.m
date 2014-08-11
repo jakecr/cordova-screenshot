@@ -24,6 +24,11 @@
 	NSNumber *quality = [command.arguments objectAtIndex:1];
 	NSString *path = [NSString stringWithFormat:@"%@.jpg",filename];
 
+	int x = [[command.arguments objectAtIndex:3] intValue];
+	int y = [[command.arguments objectAtIndex:4] intValue];
+	int width = [[command.arguments objectAtIndex:5] intValue];
+	int height = [[command.arguments objectAtIndex:6] intValue];
+
 	NSString *jpgPath = [NSTemporaryDirectory() stringByAppendingPathComponent:path ];
 
 	CGRect imageRect;
@@ -34,11 +39,18 @@
 
 	if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight) {
 		// landscape check
-		imageRect = CGRectMake(0, 0, CGRectGetHeight(screenRect), CGRectGetWidth(screenRect));
+		if (width == 0)
+			width = CGRectGetHeight(screenRect);
+		if (height == 0)
+			height = CGRectGetWidth(screenRect);
 	} else {
 		// portrait check
-		imageRect = CGRectMake(0, 0, CGRectGetWidth(screenRect), CGRectGetHeight(screenRect));
+		if (width == 0)
+			width = CGRectGetWidth(screenRect);
+		if (height == 0)
+			height = CGRectGetHeight(screenRect);
 	}
+	imageRect = CGRectMake(x, y, width, height);
 
 	// Adds support for Retina Display. Code reverts back to original if iOs 4 not detected.
 	if (NULL != UIGraphicsBeginImageContextWithOptions)
@@ -48,7 +60,7 @@
 
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	[[UIColor blackColor] set];
-	CGContextTranslateCTM(ctx, 0, 0);
+	CGContextTranslateCTM(ctx, -x, -y);
 	CGContextFillRect(ctx, imageRect);
 
 	[webView.layer renderInContext:ctx];
