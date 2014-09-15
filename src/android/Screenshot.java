@@ -39,6 +39,11 @@ public class Screenshot extends CordovaPlugin {
 			final Integer quality = (Integer) args.get(1);
 			final String fileName = (String)args.get(2);
 
+			final Integer x = (Integer) args.get(3);
+			final Integer y = (Integer) args.get(4);
+			final Integer width = (Integer) args.get(5);
+			final Integer height = (Integer) args.get(6);
+
 			super.cordova.getActivity().runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
@@ -46,7 +51,7 @@ public class Screenshot extends CordovaPlugin {
 					try {
 						if(format.equals("png") || format.equals("jpg")){
 							view.setDrawingCacheEnabled(true);
-							Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+							Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache(), x,y,width,height);
 							view.setDrawingCacheEnabled(false);
 							File folder = new File(Environment.getExternalStorageDirectory(), "Pictures");
 							if (!folder.exists()) {
